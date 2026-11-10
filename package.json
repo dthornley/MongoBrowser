@@ -1,0 +1,102 @@
+{
+  "name": "mongobrowser",
+  "version": "1.0.0",
+  "description": "A Robo3T-style MongoDB GUI for Apple Silicon Macs",
+  "main": "./out/main/index.js",
+  "author": "thornley",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "postinstall": "electron-builder install-app-deps",
+    "dist": "electron-vite build && APPLE_KEYCHAIN_PROFILE=${APPLE_KEYCHAIN_PROFILE:-MongoBrowser} electron-builder --mac --arm64",
+    "dist:unsigned": "electron-vite build && CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac --arm64 -c.mac.notarize=false",
+    "icon": "./build/make-icon.sh",
+    "release": "./scripts/release.sh"
+  },
+  "dependencies": {
+    "@codemirror/autocomplete": "^6.20.3",
+    "@codemirror/commands": "^6.11.1",
+    "@codemirror/lang-javascript": "^6.2.5",
+    "@codemirror/language": "^6.12.4",
+    "@codemirror/search": "^6.7.2",
+    "@codemirror/state": "^6.7.6",
+    "@codemirror/view": "^6.43.13",
+    "acorn": "^8.18.0",
+    "bson": "^6.10.0",
+    "codemirror": "^6.0.2",
+    "electron-updater": "^6.8.9",
+    "mongodb": "^7.7.0",
+    "ssh2": "^1.17.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "@types/ssh2": "^1.15.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "electron": "^44.5.1",
+    "electron-builder": "^26.15.3",
+    "electron-vite": "^5.0.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "typescript": "^5.6.0",
+    "vite": "^7.0.0"
+  },
+  "build": {
+    "appId": "com.thornley.mongobrowser",
+    "productName": "MongoBrowser",
+    "artifactName": "${productName}-${version}-${arch}.${ext}",
+    "files": [
+      "out/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "arm64"
+          ]
+        }
+      ],
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "notarize": true,
+      "icon": "build/icon.icns"
+    },
+    "dmg": {
+      "sign": false
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "dthornley",
+      "repo": "MongoBrowser",
+      "releaseType": "release"
+    }
+  },
+  "allowScripts": {
+    "electron@44.5.1": true,
+    "esbuild@0.25.12": true,
+    "esbuild@0.28.2": true,
+    "ssh2@1.17.0": true,
+    "cpu-features@0.0.10": true,
+    "electron-winstaller@5.4.0": true
+  }
+}
